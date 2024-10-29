@@ -5,4 +5,3 @@ export const prisma = new PrismaClient({
 });
 
 console.log('PrismaClient connected');
-

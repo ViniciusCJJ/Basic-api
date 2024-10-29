@@ -1,28 +1,36 @@
-import { injectable, inject } from "tsyringe";
-import { User } from "../entities/User";
-import { ICreateUserDTO } from "./dto/ICreateUserDTO";
+import { injectable, inject } from 'tsyringe';
 import { IUserRepository } from '@modules/User/repository/UserRepository.interface';
-import { AppError } from "@shared/error/AppError";
+import { AppError } from '@shared/error/AppError';
+import bcrypt from 'bcrypt';
+import { plainToInstance } from 'class-transformer';
+import { User } from '../entities/User';
+import { ICreateUserDTO } from './dto/ICreateUserDTO';
 
 @injectable()
-class CreateUser {
+class CreateUserService {
   constructor(
     @inject('UserRepository')
     private userRepository: IUserRepository,
   ) {}
-  public async execute({...data}: ICreateUserDTO): Promise<User> {
+
+  public async execute({ ...data }: ICreateUserDTO): Promise<User> {
     const userExists = await this.userRepository.findBy({
-      email: data.email
+      email: data.email,
     });
 
-    if(userExists) {
-      throw new AppError('User already exists', 400);
+    if (userExists) {
+      throw new AppError('Este email já está cadastrado', 400);
     }
 
-    const user = await this.userRepository.create(data);
+    const passwordHash = await bcrypt.hash(data.password, 8);
 
-    return user;
+    const user = await this.userRepository.create({
+      ...data,
+      password: passwordHash,
+    });
+
+    return plainToInstance(User, user);
   }
 }
 
-export { CreateUser };
+export { CreateUserService };

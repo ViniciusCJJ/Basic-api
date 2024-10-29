@@ -1,4 +1,5 @@
-import { User as IUser } from "@prisma/client";
+import { $Enums, User as IUser } from '@prisma/client';
+import { Exclude } from 'class-transformer';
 
 class User implements IUser {
   name!: string;
@@ -7,6 +8,9 @@ class User implements IUser {
 
   email!: string;
 
+  role!: $Enums.UserRole;
+
+  @Exclude()
   password!: string;
 
   createdAt!: Date;

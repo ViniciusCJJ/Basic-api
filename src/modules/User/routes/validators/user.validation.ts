@@ -1,12 +1,70 @@
-import { ValidateSchemaType } from '@shared/middleware/validate';
+import { IValidateSchemaType } from '@shared/middleware/validate';
 import { z } from 'zod';
 
-export const createUserSchema : ValidateSchemaType =
-  {
-    body: z.object({
-      name: z.string().min(3).max(255),
-      email: z.string().email(),
-      password: z.string().min(6).max(255),
-    }),
-  }
+export const createUserSchema: IValidateSchemaType = {
+  body: z.object({
+    name: z
+      .string({
+        required_error: 'Campo nome é obrigatório',
+      })
+      .min(3, {
+        message: 'Nome deve ter no mínimo 3 caracteres',
+      })
+      .max(255, {
+        message: 'Nome deve ter no máximo 255 caracteres',
+      }),
+    email: z
+      .string({
+        required_error: 'Campo email é obrigatório',
+      })
+      .email({
+        message: 'Email inválido',
+      }),
+    password: z
+      .string({
+        required_error: 'Campo senha é obrigatório',
+      })
+      .min(6, {
+        message: 'Senha deve ter no mínimo 6 caracteres',
+      })
+      .max(255, {
+        message: 'Senha deve ter no máximo 255 caracteres',
+      }),
+  }),
+};
 
+export const loginSchema: IValidateSchemaType = {
+  body: z.object({
+    email: z
+      .string({
+        required_error: 'Campo email é obrigatório',
+      })
+      .email({
+        message: 'Email inválido',
+      }),
+    password: z.string({
+      required_error: 'Campo senha é obrigatório',
+    }),
+  }),
+};
+
+export const updateUserSchema: IValidateSchemaType = {
+  body: z.object({
+    name: z
+      .string({
+        required_error: 'Campo nome é obrigatório',
+      })
+      .min(3, {
+        message: 'Nome deve ter no mínimo 3 caracteres',
+      })
+      .max(255, {
+        message: 'Nome deve ter no máximo 255 caracteres',
+      })
+      .optional(),
+  }),
+  params: z.object({
+    id: z.string().regex(/^c[a-z0-9]{24}$/, {
+      message: 'Id inválido',
+    }),
+  }),
+};
