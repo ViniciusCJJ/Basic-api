@@ -4,7 +4,9 @@ import { ICreateUserDTO } from './dto/UserRepositoryDTO';
 interface IUserRepository {
   create(data: ICreateUserDTO): Promise<User>;
   findBy(filters: Partial<User>): Promise<User | null>;
-  // listBy(): Promise<User[]>;
+  listBy(
+    filters: Partial<User> & { page?: number; limit?: number },
+  ): Promise<User[]>;
   update(user: User): Promise<User>;
   remove(user: User): Promise<void>;
 }

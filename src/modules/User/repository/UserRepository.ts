@@ -44,6 +44,37 @@ class UserRepository implements IUserRepository {
       },
     });
   }
+
+  async listBy(
+    filters: Partial<User> & { page?: number; limit?: number },
+  ): Promise<any> {
+    const {
+      page = 1,
+      limit = Number(process.env.PAGINATION_LIMIT) ?? 10,
+      ...restFilters
+    } = filters;
+
+    const users = await prisma.user.findMany({
+      where: {
+        ...restFilters,
+      },
+      take: limit,
+      skip: (page - 1) * limit,
+    });
+
+    const total = await prisma.user.count({
+      where: {
+        ...restFilters,
+      },
+    });
+
+    return {
+      data: users,
+      page,
+      limit,
+      total,
+    };
+  }
 }
 
 export { UserRepository };

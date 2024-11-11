@@ -3,6 +3,9 @@ import { Request, Response } from 'express';
 import { CreateUserService } from '../services/CreateUser.service';
 import { CreateSessionService } from '../services/CreateSession.service';
 import { UpdateUserService } from '../services/UpdateUser.service';
+import { DeleteUserService } from '../services/DeleteUser.service';
+import { IndexUserService } from '../services/IndexUser.service';
+import { GetUserService } from '../services/GetUser.service';
 
 class UserController {
   async create(req: Request, res: Response): Promise<any> {
@@ -35,6 +38,39 @@ class UserController {
     const response = await createSession.execute({ email, password });
 
     return res.status(201).json(response);
+  }
+
+  async get(req: Request, res: Response): Promise<any> {
+    const { id } = req.params;
+    const { id: request_id } = req.user;
+
+    const getUser = container.resolve(GetUserService);
+
+    const user = await getUser.execute({ id, request_id });
+
+    return res.status(200).json(user);
+  }
+
+  async delete(req: Request, res: Response): Promise<any> {
+    const { id } = req.params;
+    const { id: request_id } = req.user;
+
+    const deleteUser = container.resolve(DeleteUserService);
+
+    await deleteUser.execute({ id, request_id });
+
+    return res.status(204).send();
+  }
+
+  async index(req: Request, res: Response): Promise<any> {
+    const { page, limit, ...filters } = req.query;
+    const { id } = req.user;
+
+    const indexUser = container.resolve(IndexUserService);
+
+    const user = await indexUser.execute(id, page, limit, filters);
+
+    return res.status(200).json(user);
   }
 }
 

@@ -2,6 +2,9 @@ import { Router } from 'express';
 import { container } from 'tsyringe';
 import {
   createUserSchema,
+  deleteUserSchema,
+  getUserSchema,
+  indexUserSchema,
   loginSchema,
   updateUserSchema,
 } from '@modules/User/routes/validators/user.validation';
@@ -22,5 +25,16 @@ userRouter.post('/login', validate(loginSchema), userController.createSession);
 userRouter.use(verifyToken);
 
 userRouter.put('/:id', validate(updateUserSchema), userController.update);
+
+userRouter.get('/:id', validate(getUserSchema), userController.get);
+
+userRouter.delete('/:id', validate(deleteUserSchema), userController.delete);
+
+userRouter.get(
+  '/',
+  verifyAuth([UserRole.Admin]),
+  validate(indexUserSchema),
+  userController.index,
+);
 
 export { userRouter };

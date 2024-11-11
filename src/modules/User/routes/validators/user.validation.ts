@@ -68,3 +68,34 @@ export const updateUserSchema: IValidateSchemaType = {
     }),
   }),
 };
+
+export const deleteUserSchema: IValidateSchemaType = {
+  params: z.object({
+    id: z.string().regex(/^c[a-z0-9]{24}$/, {
+      message: 'Id inválido',
+    }),
+  }),
+};
+
+export const getUserSchema: IValidateSchemaType = {
+  params: z.object({
+    id: z.string().regex(/^c[a-z0-9]{24}$/, {
+      message: 'Id inválido',
+    }),
+  }),
+};
+
+export const indexUserSchema: IValidateSchemaType = {
+  query: z.object({
+    page: z
+      .string()
+      .transform(value => parseInt(value, 10))
+      .optional(),
+    limit: z
+      .string()
+      .transform(value => parseInt(value, 10))
+      .optional(),
+    name: z.string().optional(),
+    email: z.string().optional(),
+  }),
+};
