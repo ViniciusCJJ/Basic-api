@@ -28,7 +28,7 @@ export const validate = (
 ): ValidationMiddleware => {
   return async (
     req: Request,
-    res: Response,
+    _res: Response,
     next: NextFunction,
   ): Promise<void> => {
     try {
