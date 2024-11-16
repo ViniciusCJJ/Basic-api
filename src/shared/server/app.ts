@@ -2,6 +2,8 @@ import express, { json } from 'express';
 import logger from '@shared/utils/logger';
 import { globalErrorHandler } from '@shared/middleware/globalErrorHandler';
 import { router } from './routes';
+import '../providers/RedisProvider';
+import '../providers/MailProvider';
 import '@shared/container';
 
 const app = express();
