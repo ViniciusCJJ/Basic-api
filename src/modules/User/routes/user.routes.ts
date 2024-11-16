@@ -1,11 +1,14 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
 import {
+  changePasswordSchema,
   createUserSchema,
   deleteUserSchema,
+  forgotPasswordSchema,
   getUserSchema,
   indexUserSchema,
   loginSchema,
+  resetPasswordSchema,
   updateUserSchema,
 } from '@modules/User/routes/validators/user.validation';
 import { validate } from '@shared/middleware/validate';
@@ -22,6 +25,18 @@ userRouter.post('/', validate(createUserSchema), userController.create);
 
 userRouter.post('/login', validate(loginSchema), userController.createSession);
 
+userRouter.post(
+  '/forgot-password',
+  validate(forgotPasswordSchema),
+  userController.forgotPassword,
+);
+
+userRouter.post(
+  '/reset-password/:token',
+  validate(resetPasswordSchema),
+  userController.resetPassword,
+);
+
 userRouter.use(verifyToken);
 
 userRouter.put('/:id', validate(updateUserSchema), userController.update);
@@ -35,6 +50,12 @@ userRouter.get(
   verifyAuth([UserRole.Admin]),
   validate(indexUserSchema),
   userController.index,
+);
+
+userRouter.post(
+  '/change-password/:id',
+  validate(changePasswordSchema),
+  userController.changePassword,
 );
 
 export { userRouter };

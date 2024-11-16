@@ -6,19 +6,22 @@ import { UpdateUserService } from '../services/UpdateUser.service';
 import { DeleteUserService } from '../services/DeleteUser.service';
 import { IndexUserService } from '../services/IndexUser.service';
 import { GetUserService } from '../services/GetUser.service';
+import { ChangePasswordService } from '../services/ChangePassword.service';
+import { ForgotPasswordService } from '../services/ForgotPassword.service';
+import { ResetPasswordService } from '../services/ResetPassword.service';
 
 class UserController {
-  async create(req: Request, res: Response): Promise<any> {
+  async create(req: Request, res: Response): Promise<void> {
     const { name, email, password } = req.body;
 
     const createUser = container.resolve(CreateUserService);
 
     const user = await createUser.execute({ name, email, password });
 
-    return res.status(201).json(user);
+    res.status(201).json(user);
   }
 
-  async update(req: Request, res: Response): Promise<any> {
+  async update(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const { name } = req.body;
     const { id: request_id, role } = req.user;
@@ -27,20 +30,20 @@ class UserController {
 
     const user = await updateUser.execute({ name, id, request_id, role });
 
-    return res.status(201).json(user);
+    res.status(201).json(user);
   }
 
-  async createSession(req: Request, res: Response): Promise<any> {
+  async createSession(req: Request, res: Response): Promise<void> {
     const { email, password } = req.body;
 
     const createSession = container.resolve(CreateSessionService);
 
     const response = await createSession.execute({ email, password });
 
-    return res.status(201).json(response);
+    res.status(201).json(response);
   }
 
-  async get(req: Request, res: Response): Promise<any> {
+  async get(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const { id: request_id } = req.user;
 
@@ -48,10 +51,10 @@ class UserController {
 
     const user = await getUser.execute({ id, request_id });
 
-    return res.status(200).json(user);
+    res.status(200).json(user);
   }
 
-  async delete(req: Request, res: Response): Promise<any> {
+  async delete(req: Request, res: Response): Promise<void> {
     const { id } = req.params;
     const { id: request_id } = req.user;
 
@@ -59,10 +62,10 @@ class UserController {
 
     await deleteUser.execute({ id, request_id });
 
-    return res.status(204).send();
+    res.status(204).send();
   }
 
-  async index(req: Request, res: Response): Promise<any> {
+  async index(req: Request, res: Response): Promise<void> {
     const { page, limit, ...filters } = req.query;
     const { id } = req.user;
 
@@ -70,7 +73,45 @@ class UserController {
 
     const user = await indexUser.execute(id, page, limit, filters);
 
-    return res.status(200).json(user);
+    res.status(200).json(user);
+  }
+
+  async changePassword(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+    const { oldPassword, newPassword } = req.body;
+    const { id: request_id } = req.user;
+
+    const changePassword = container.resolve(ChangePasswordService);
+
+    await changePassword.execute({
+      request_id,
+      user_id: id,
+      oldPassword,
+      newPassword,
+    });
+
+    res.status(204).send();
+  }
+
+  async forgotPassword(req: Request, res: Response): Promise<void> {
+    const { email } = req.body;
+
+    const forgotPassword = container.resolve(ForgotPasswordService);
+
+    await forgotPassword.execute(email);
+
+    res.status(204).send();
+  }
+
+  async resetPassword(req: Request, res: Response): Promise<void> {
+    const { password } = req.body;
+    const { token } = req.params;
+
+    const resetPassword = container.resolve(ResetPasswordService);
+
+    await resetPassword.execute({ token, password });
+
+    res.status(204).send();
   }
 }
 
