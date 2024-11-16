@@ -1,10 +1,17 @@
 import { prisma } from '@shared/database';
+import { invalidateIndexUsersCache } from '@shared/utils/invalidateIndexUsersCache';
 import { User } from '../entities/User';
 import { ICreateUserDTO } from './dto/UserRepositoryDTO';
-import { IUserRepository } from './UserRepository.interface';
+import {
+  IndexRequest,
+  IndexResponse,
+  IUserRepository,
+} from './UserRepository.interface';
 
 class UserRepository implements IUserRepository {
   async create(data: ICreateUserDTO): Promise<User> {
+    await invalidateIndexUsersCache();
+
     const user = await prisma.user.create({
       data: {
         ...data,
@@ -25,6 +32,8 @@ class UserRepository implements IUserRepository {
   }
 
   async update(user: User): Promise<User> {
+    await invalidateIndexUsersCache();
+
     const updatedUser = await prisma.user.update({
       where: {
         id: user.id,
@@ -38,6 +47,8 @@ class UserRepository implements IUserRepository {
   }
 
   async remove(user: User): Promise<void> {
+    await invalidateIndexUsersCache();
+
     await prisma.user.delete({
       where: {
         id: user.id,
@@ -45,18 +56,14 @@ class UserRepository implements IUserRepository {
     });
   }
 
-  async listBy(
-    filters: Partial<User> & { page?: number; limit?: number },
-  ): Promise<any> {
-    const {
-      page = 1,
-      limit = Number(process.env.PAGINATION_LIMIT) ?? 10,
-      ...restFilters
-    } = filters;
-
+  async listBy({
+    page = 1,
+    limit = Number(process.env.PAGINATION_LIMIT) ?? 10,
+    filters,
+  }: IndexRequest<User>): Promise<IndexResponse<User>> {
     const users = await prisma.user.findMany({
       where: {
-        ...restFilters,
+        ...filters,
       },
       take: limit,
       skip: (page - 1) * limit,
@@ -64,7 +71,7 @@ class UserRepository implements IUserRepository {
 
     const total = await prisma.user.count({
       where: {
-        ...restFilters,
+        ...filters,
       },
     });
 
