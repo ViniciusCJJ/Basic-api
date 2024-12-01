@@ -22,17 +22,6 @@ jobs:
       - name: Run build
         run: yarn build
 
-      - name: Exclude node_modules and upload build artifact
-        run: |
-          cd $GITHUB_WORKSPACE
-          tar --exclude='./node_modules' -czf project.tar.gz .
-
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4.4.3
-        with:
-          name: project-artifacts
-          path: project.tar.gz
-
   CD:
     runs-on: ubuntu-latest
 
@@ -41,21 +30,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4.1.0
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          node-version: 20.15.1
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4.1.8
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Run build
+        run: yarn build
+
+      - name: Copy to server
+        uses: appleboy/scp-action@v0.1.7
         with:
-          name: project-artifacts
-          path: ./downloaded_artifacts
+          host: ${{ secrets.HOST_SERVER}}
+          username: ${{ secrets.HOST_USER }}
+          port: 22
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: '.,!node_modules'
+          target: '~/apps/gerador-de-dados'
 
-      - name: Extract the artifact
-        run: |
-          tar -xzf ./downloaded_artifacts/project.tar.gz -C ./downloaded_artifacts
-
-      - name: Deploy to server via SCP
-        run: |
-          scp -r ./downloaded_artifacts/* ${{ secrets.HOST_USER }}@${{ secrets.HOST_SERVER }}:${{ secrets.HOST_PATH }}
+      - name: Run script on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_SERVER }}
+          username: ${{ secrets.HOST_USER }}
+          port: 22
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd ~/apps/gerador-de-dados
+            yarn
