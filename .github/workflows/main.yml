@@ -8,6 +8,16 @@ jobs:
   CI:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: mock
+          POSTGRES_PASSWORD: mock_password
+          POSTGRES_DB: Mock_gerador_db
+
     steps:
       - uses: actions/checkout@v4.2.2
 
@@ -21,6 +31,28 @@ jobs:
 
       - name: Run build
         run: yarn build
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          for i in {1..10}; do
+            if pg_isready -h 127.0.0.1 -p 5432 -U mock; then
+              echo "PostgreSQL is ready";
+              exit 0;
+            fi;
+            echo "Waiting for PostgreSQL...";
+            sleep 5;
+          done;
+          exit 1
+
+      - name: Run Prisma Migrations
+        env:
+          DATABASE_URL: 'postgresql://mock:mock_password@127.0.0.1:5432/Mock_gerador_db'
+        run: npx prisma migrate dev
+
+      - name: Run tests
+        env:
+          DATABASE_URL: 'postgresql://mock:mock_password@127.0.0.1:5432/Mock_gerador_db'
+        run: yarn test
 
   CD:
     runs-on: ubuntu-latest
