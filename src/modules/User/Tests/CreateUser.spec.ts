@@ -2,19 +2,11 @@
 // IT or TEST -> declara um único teste unitário
 // EXPECT -> verifica se o teste passou ou falhou
 
-import 'dotenv/config';
-import 'express-async-errors';
-import 'reflect-metadata';
-import { prisma } from '@shared/database';
-import '@shared/providers/RedisProvider/index';
-import { app } from '@shared/server/app';
+import '@shared/server/index';
 import { Request, Response } from 'express';
+import { prisma } from '@shared/database';
 import { AppError } from '@shared/error/AppError';
 import { UserController } from '../controller/user.controller';
-
-beforeAll(() => {
-  prisma.$connect();
-});
 
 describe('Create User', () => {
   const random = Math.floor(Math.random() * 1000);
@@ -42,31 +34,8 @@ describe('Create User', () => {
     expect(reply.status).toHaveBeenCalledWith(201);
     expect(reply.json).toHaveBeenCalled();
   });
-
-  // it('Create user failed', async () => {
-  //   // vai falhar pois o email já foi cadastrado
-  //   const request = {
-  //     body: {
-  //       name: 'User Test',
-  //       email: userEmail,
-  //       password: '123456',
-  //     },
-  //   } as unknown as Request;
-
-  //   const reply = {
-  //     status: jest.fn().mockReturnThis(),
-  //     json: jest.fn(),
-  //   } as unknown as Response;
-
-  //   try {
-  //     userController.create(request, reply);
-  //   } catch (error) {
-  //     expect(error).toBeInstanceOf(AppError);
-  //   }
-  // });
 });
 
-afterAll(async () => {
-  await prisma.$disconnect();
-  app.listen().close();
+afterAll(() => {
+  prisma.$disconnect();
 });
