@@ -22,8 +22,6 @@ jobs:
         image: redis:latest
         ports:
           - 6379:6379
-        options: >
-          --requirepass ""
 
     steps:
       - uses: actions/checkout@v4.2.2
