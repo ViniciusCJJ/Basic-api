@@ -18,6 +18,13 @@ jobs:
           POSTGRES_PASSWORD: mock_password
           POSTGRES_DB: Mock_gerador_db
 
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+        options: >
+          --requirepass ""
+
     steps:
       - uses: actions/checkout@v4.2.2
 
@@ -44,6 +51,18 @@ jobs:
           done;
           exit 1
 
+      - name: Wait for Redis to be ready
+        run: |
+          for i in {1..10}; do
+            if redis-cli -h 127.0.0.1 -p 6379 ping | grep PONG; then
+              echo "Redis is ready";
+              exit 0;
+            fi;
+            echo "Waiting for Redis...";
+            sleep 5;
+          done;
+          exit 1
+
       - name: Run Prisma Migrations
         env:
           DATABASE_URL: 'postgresql://mock:mock_password@127.0.0.1:5432/Mock_gerador_db'
@@ -52,6 +71,10 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: 'postgresql://mock:mock_password@127.0.0.1:5432/Mock_gerador_db'
+          REDIS_HOST: '127.0.0.1'
+          REDIS_PORT: '6379'
+          REDIS_PASSWORD: ''
+          REDIS_DB: '0'
         run: yarn test
 
   CD:
