@@ -3,39 +3,57 @@
 // EXPECT -> verifica se o teste passou ou falhou
 
 import '@shared/server/index';
-import { Request, Response } from 'express';
 import { prisma } from '@shared/database';
-import { AppError } from '@shared/error/AppError';
-import { UserController } from '../controller/user.controller';
+import { app } from '@shared/server/app';
+import request from 'supertest';
+
+let server: any;
+
+beforeAll(() => {
+  prisma.$connect();
+  server = app.listen(3333);
+});
 
 describe('Create User', () => {
   const random = Math.floor(Math.random() * 1000);
-
   const userEmail = `exempleEmail${random}@email.com`;
 
-  const userController = new UserController();
-
   it('Create user successfully', async () => {
-    const request = {
-      body: {
-        name: 'User Test',
-        email: userEmail,
-        password: '123456',
-      },
-    } as unknown as Request;
+    const response = await request(app).post('/user').send({
+      name: 'User Test',
+      email: userEmail,
+      password: '123456',
+    });
 
-    const reply = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    } as unknown as Response;
+    expect(response.status).toBe(201);
+    expect(response.body).toHaveProperty('id');
+    expect(response.body).toHaveProperty('name');
+    expect(response.body).toHaveProperty('email');
+  });
 
-    await userController.create(request, reply);
+  it('Create user with the same email', async () => {
+    const response = await request(app).post('/user').send({
+      name: 'User Test',
+      email: userEmail,
+      password: '123456',
+    });
 
-    expect(reply.status).toHaveBeenCalledWith(201);
-    expect(reply.json).toHaveBeenCalled();
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('message');
+  });
+
+  it('Create user with missing data', async () => {
+    const response = await request(app).post('/user').send({
+      name: 'User Test',
+      password: '123456',
+    });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('message');
   });
 });
 
 afterAll(() => {
   prisma.$disconnect();
+  server.close();
 });
