@@ -16,7 +16,7 @@ jobs:
         env:
           POSTGRES_USER: mock
           POSTGRES_PASSWORD: mock_password
-          POSTGRES_DB: Mock_gerador_db
+          POSTGRES_DB: mock_db
 
       redis:
         image: redis:latest
@@ -63,16 +63,17 @@ jobs:
 
       - name: Run Prisma Migrations
         env:
-          DATABASE_URL: 'postgresql://mock:mock_password@127.0.0.1:5432/Mock_gerador_db'
+          DATABASE_URL: 'postgresql://mock:mock_password@127.0.0.1:5432/mock_db'
         run: npx prisma migrate deploy
 
       - name: Run tests
         env:
-          DATABASE_URL: 'postgresql://mock:mock_password@127.0.0.1:5432/Mock_gerador_db'
+          DATABASE_URL: 'postgresql://mock:mock_password@127.0.0.1:5432/mock_db'
           REDIS_HOST: '127.0.0.1'
           REDIS_PORT: '6379'
           REDIS_PASSWORD: ''
           REDIS_DB: '0'
+          NODE_ENV: 'test'
         run: yarn test
 
   CD:
