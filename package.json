@@ -9,7 +9,7 @@
     "build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files",
     "dev": "tsx watch --include ./src src/shared/server",
     "start": "node dist/shared/server",
-    "test": "jest --passWithNoTests --detectOpenHandles "
+    "test": "jest --passWithNoTests --detectOpenHandles --forceExit"
   },
   "dependencies": {
     "@prisma/client": "^5.21.1",
