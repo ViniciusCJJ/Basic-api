@@ -12,17 +12,8 @@ import { Request, Response } from 'express';
 import { AppError } from '@shared/error/AppError';
 import { UserController } from '../controller/user.controller';
 
-const PORT = process.env.PORT || 3333;
-
-prisma.$connect();
-
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(
-    `Server running on port ${PORT} , URL: ${
-      process.env.BASE_URL || 'http://localhost:3333'
-    }`,
-  );
+beforeAll(() => {
+  prisma.$connect();
 });
 
 describe('Create User', () => {
@@ -73,4 +64,9 @@ describe('Create User', () => {
   //     expect(error).toBeInstanceOf(AppError);
   //   }
   // });
+});
+
+afterAll(async () => {
+  await prisma.$disconnect();
+  app.listen().close();
 });
