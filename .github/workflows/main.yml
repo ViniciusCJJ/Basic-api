@@ -122,3 +122,5 @@ jobs:
           script: |
             cd ~/apps/gerador-de-dados
             yarn
+            yarn prisma migrate deploy
+            pm2 restart gerador-de-dados
