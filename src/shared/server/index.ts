@@ -3,6 +3,7 @@ import 'express-async-errors';
 import 'reflect-metadata';
 import '@shared/database';
 import '@shared/providers/RedisProvider/index';
+import '@shared/providers/MailProvider/index';
 import { app } from '@shared/server/app';
 
 const PORT = process.env.PORT || 3333;
