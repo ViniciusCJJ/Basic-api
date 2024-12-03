@@ -14,15 +14,19 @@ export const verifyToken = (
     return res.status(401).json({ message: 'JWT não encontrado', status: 401 });
   }
 
-  const token = req.headers.authorization.split(' ')[1];
+  try {
+    const token = req.headers.authorization.split(' ')[1];
 
-  const decoded = jwt.verify(token as string, secret);
+    const decoded = jwt.verify(token as string, secret);
 
-  if (!decoded) {
+    if (!decoded) {
+      return res.status(401).json({ message: 'Token inválido', status: 401 });
+    }
+
+    Object.assign(req, { user: decoded });
+  } catch (error) {
     return res.status(401).json({ message: 'Token inválido', status: 401 });
   }
-
-  Object.assign(req, { user: decoded });
 
   return next();
 };
