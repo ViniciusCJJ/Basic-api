@@ -40,7 +40,7 @@ class UserController {
 
     const response = await createSession.execute({ email, password });
 
-    res.status(201).json(response);
+    res.status(200).json(response);
   }
 
   async get(req: Request, res: Response): Promise<void> {
