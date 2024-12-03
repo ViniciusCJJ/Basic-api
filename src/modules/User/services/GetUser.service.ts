@@ -18,7 +18,11 @@ class GetUserService {
       id: request_id,
     });
 
-    if (!requestUser || requestUser.role !== UserRole.Admin) {
+    if (!requestUser) {
+      throw new AppError('Usuário não encontrado', 404);
+    }
+
+    if (requestUser.role !== UserRole.Admin && requestUser.id !== id) {
       throw new AppError('Usuário não encontrado', 404);
     }
 
