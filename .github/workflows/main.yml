@@ -74,6 +74,12 @@ jobs:
           REDIS_PASSWORD: ''
           REDIS_DB: '0'
           NODE_ENV: 'test'
+          MAIL_HOST: 'smtp-relay.sendinblue.com'
+          MAIL_PORT: '587'
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          MAIL_ADDRESS: 'noreply@teste.com'
+          MAIL_NAME: 'Mock test'
         run: yarn test
 
   CD:
