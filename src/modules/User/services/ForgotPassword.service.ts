@@ -34,10 +34,23 @@ class ForgotPasswordService {
         ttl: 60 * 60,
       });
 
-      const mailTemplate = await fs.promises.readFile(
-        path.resolve(__dirname, '..', 'views', 'forgot_password.hbs'),
-        'utf8',
-      );
+      let mailTemplate;
+      if (process.env.NODE_ENV === 'test' && process.env.CI_RUN) {
+        console.log('CI_RUN');
+        mailTemplate = await fs.promises.readFile(
+          path.resolve(
+            process.cwd(),
+            'dist/modules/User/views/forgot_password.hbs',
+          ),
+          'utf8',
+        );
+      } else {
+        console.log('NOT CI_RUN');
+        mailTemplate = await fs.promises.readFile(
+          path.resolve(__dirname, '..', 'views', 'forgot_password.hbs'),
+          'utf8',
+        );
+      }
 
       const parseTemplate = handlebars.compile(mailTemplate);
 

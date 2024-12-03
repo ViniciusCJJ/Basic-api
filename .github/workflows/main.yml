@@ -80,6 +80,7 @@ jobs:
           MAIL_PASS: ${{ secrets.MAIL_PASS }}
           MAIL_ADDRESS: 'noreply@teste.com'
           MAIL_NAME: 'Mock test'
+          CI_RUN: 'true'
         run: yarn test
 
   CD:
