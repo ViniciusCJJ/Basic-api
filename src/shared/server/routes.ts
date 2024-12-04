@@ -1,7 +1,8 @@
 import { userRouter } from '@modules/User/routes/user.routes';
 import { Request, Response, Router } from 'express';
+
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from '@config/swagger.json';
+import swaggerOptions from '@config/swagger.json';
 
 const router = Router();
 
@@ -15,7 +16,7 @@ router.get('/', (_req: Request, res: Response) => {
 
 router.use('/api-docs', swaggerUi.serve);
 
-router.get('/api-docs', swaggerUi.setup(swaggerDocument));
+router.get('/api-docs', swaggerUi.setup(swaggerOptions));
 
 router.use('/user', userRouter);
 
