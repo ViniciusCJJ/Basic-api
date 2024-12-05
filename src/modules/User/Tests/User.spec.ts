@@ -18,6 +18,7 @@ describe('User module tests', () => {
   const random = Math.floor(Math.random() * 1000);
   const userEmail = `exempleEmail${random}@email.com`;
   let token: string;
+  let tokenToDestroy: string;
   let userId: string;
 
   it('Create user successfully', async () => {
@@ -137,6 +138,37 @@ describe('User module tests', () => {
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty('message');
+  });
+
+  it('Create session with token to destroy', async () => {
+    // eslint-disable-next-line no-promise-executor-return
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    const response = await request(app).post('/user/login').send({
+      email: userEmail,
+      password: '123456',
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.body).toHaveProperty('token');
+    expect(response.body).toHaveProperty('user');
+
+    tokenToDestroy = response.body.token;
+  });
+
+  it('Destroy session successfully', async () => {
+    const response = await request(app)
+      .delete('/user/logout')
+      .set('Authorization', `Bearer ${tokenToDestroy}`);
+
+    expect(response.status).toBe(200);
+  });
+
+  it('Destroy session without token', async () => {
+    const response = await request(app).delete('/user/logout');
+
+    expect(response.status).toBe(401);
     expect(response.body).toHaveProperty('message');
   });
 
