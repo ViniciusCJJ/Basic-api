@@ -48,6 +48,14 @@ export const loginSchema: IValidateSchemaType = {
   }),
 };
 
+export const logoutSchema: IValidateSchemaType = {
+  headers: z.object({
+    authorization: z.string({
+      required_error: 'Campo authorization é obrigatório',
+    }),
+  }),
+};
+
 export const updateUserSchema: IValidateSchemaType = {
   body: z.object({
     name: z

@@ -8,6 +8,7 @@ import {
   getUserSchema,
   indexUserSchema,
   loginSchema,
+  logoutSchema,
   resetPasswordSchema,
   updateUserSchema,
 } from '@modules/User/routes/validators/user.validation';
@@ -38,6 +39,12 @@ userRouter.post(
 );
 
 userRouter.use(verifyToken);
+
+userRouter.delete(
+  '/logout',
+  validate(logoutSchema),
+  userController.destroySession,
+);
 
 userRouter.put('/:id', validate(updateUserSchema), userController.update);
 

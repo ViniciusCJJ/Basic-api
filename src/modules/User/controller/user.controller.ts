@@ -9,6 +9,7 @@ import { GetUserService } from '../services/GetUser.service';
 import { ChangePasswordService } from '../services/ChangePassword.service';
 import { ForgotPasswordService } from '../services/ForgotPassword.service';
 import { ResetPasswordService } from '../services/ResetPassword.service';
+import { DestroySessionService } from '../services/DestroySession.service';
 
 class UserController {
   async create(req: Request, res: Response): Promise<void> {
@@ -39,6 +40,18 @@ class UserController {
     const createSession = container.resolve(CreateSessionService);
 
     const response = await createSession.execute({ email, password });
+
+    res.status(200).json(response);
+  }
+
+  async destroySession(req: Request, res: Response): Promise<void> {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    const destroySession = container.resolve(DestroySessionService);
+
+    const response = await destroySession.execute({
+      token,
+    });
 
     res.status(200).json(response);
   }
@@ -77,7 +90,7 @@ class UserController {
   }
 
   async changePassword(req: Request, res: Response): Promise<void> {
-    const { id } = req.params;
+    const { id } = req.params as { id: string };
     const { oldPassword, newPassword } = req.body;
     const { id: request_id } = req.user;
 
@@ -105,7 +118,7 @@ class UserController {
 
   async resetPassword(req: Request, res: Response): Promise<void> {
     const { password } = req.body;
-    const { token } = req.params;
+    const { token } = req.params as { token: string };
 
     const resetPassword = container.resolve(ResetPasswordService);
 
