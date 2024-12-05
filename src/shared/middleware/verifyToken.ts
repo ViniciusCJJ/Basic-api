@@ -1,11 +1,14 @@
+import { AppError } from '@shared/error/AppError';
+import { RedisProvider } from '@shared/providers/RedisProvider/implementation/RedisProvider';
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { container } from 'tsyringe';
 
-export const verifyToken = (
+export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction,
-): any => {
+): Promise<any> => {
   const secret = process.env.JWT_SECRET
     ? (process.env.JWT_SECRET as string)
     : 'jZkiADNIrB';
@@ -21,6 +24,14 @@ export const verifyToken = (
 
     if (!decoded) {
       return res.status(401).json({ message: 'Token inválido', status: 401 });
+    }
+
+    const redisProvider = container.resolve(RedisProvider);
+
+    const tokenExists = await redisProvider.get(token as string);
+
+    if (tokenExists) {
+      throw new AppError('Token Inválido', 401);
     }
 
     Object.assign(req, { user: decoded });
