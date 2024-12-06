@@ -1,5 +1,5 @@
 {
-  "name": "gerador-de-dados",
+  "name": "basic-boilerplate",
   "version": "1.0.0",
   "description": "Projeto com o objetivo de gerar diversos tipos de dados úteis",
   "main": "index.js",

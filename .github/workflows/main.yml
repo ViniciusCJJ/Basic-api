@@ -110,7 +110,7 @@ jobs:
           port: 22
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: '.,!node_modules'
-          target: '~/apps/gerador-de-dados'
+          target: '~/apps/project-name'
 
       - name: Run script on server
         uses: appleboy/ssh-action@master
@@ -120,7 +120,7 @@ jobs:
           port: 22
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/apps/gerador-de-dados
+            cd ~/apps/project-name'
             yarn
             yarn prisma migrate deploy
-            pm2 restart gerador-de-dados
+            pm2 restart project-name'

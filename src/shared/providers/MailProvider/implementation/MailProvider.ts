@@ -23,7 +23,6 @@ class MailProvider {
   }
 
   public async sendMail({ to, subject, body }: ISendMailDTO): Promise<void> {
-    console.log('Sending email to:', to);
     const { MAIL_NAME, MAIL_ADDRESS } = MailConfig;
 
     await this.transporter.sendMail({

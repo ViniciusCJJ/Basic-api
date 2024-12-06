@@ -10,23 +10,25 @@ const app = express();
 
 app.use(json());
 
-app.use((req, res, next) => {
-  const originalSend = res.send;
-  res.send = function _f(data) {
-    const logObject = {
-      method: req.method,
-      url: req.baseUrl,
-      params: req.params,
-      query: req.query,
-      body: req.body,
-      status: res.statusCode,
-      response: data,
+if (process.env.NODE_ENV !== 'test') {
+  app.use((req, res, next) => {
+    const originalSend = res.send;
+    res.send = function _f(data) {
+      const logObject = {
+        method: req.method,
+        url: req.baseUrl,
+        params: req.params,
+        query: req.query,
+        body: req.body,
+        status: res.statusCode,
+        response: data,
+      };
+      logger.info(JSON.stringify(logObject));
+      return originalSend.call(this, data);
     };
-    logger.info(JSON.stringify(logObject));
-    return originalSend.call(this, data);
-  };
-  next();
-});
+    next();
+  });
+}
 
 app.use(router);
 
