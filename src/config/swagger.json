@@ -1,290 +1,394 @@
-openapi: 3.0.3
-info:
-  title: Gerador
-  version: 1.0.0
-  contact: {}
-servers:
-  - url: '{{baseUrl}}'
-paths:
-  /user/login:
-    post:
-      tags:
-        - User
-      summary: Create Session
-      description: Create Session
-      operationId: createSession
-      requestBody:
-        content:
-          application/json:
-            examples:
-              Create Session:
-                value: "{\r\n    //\"email\":\"master@master.com\",\"password\":\"12345678\"\r\n    \"email\":\"viniciusjungers@gmail.com\",\"password\":\"112233445566\"\r\n}"
-      responses:
-        '200':
-          description: ''
-  /user/logout:
-    delete:
-      tags:
-        - User
-      summary: Destroy Session
-      description: Destroy Session
-      operationId: destroySession
-      responses:
-        '200':
-          description: ''
-      security:
-        - bearerAuth: []
-  /user:
-    get:
-      tags:
-        - User
-      summary: Index User
-      description: Index User
-      operationId: indexUser
-      parameters:
-        - name: page
-          in: query
-          schema:
-            type: string
-            example: '1'
-        - name: limit
-          in: query
-          schema:
-            type: string
-            example: '1'
-        - name: name
-          in: query
-          schema:
-            type: string
-            example: updateUser22
-      responses:
-        '200':
-          description: ''
-      security:
-        - bearerAuth: []
-    post:
-      tags:
-        - User
-      summary: Create User
-      description: Create User
-      operationId: createUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: viniciusjungers232323@gmail.com
-                name:
-                  type: string
-                  example: Vinicius
-                password:
-                  type: string
-                  example: '12345678'
-            examples:
-              Create User:
-                value:
-                  email: viniciusjungers232323@gmail.com
-                  name: Vinicius
-                  password: '12345678'
-      responses:
-        '200':
-          description: ''
-      security:
-        - bearerAuth: []
-  /user/{id}:
-    get:
-      tags:
-        - User
-      summary: Get User
-      description: Get User
-      operationId: getUser
-      responses:
-        '200':
-          description: ''
-      security:
-        - {}
-    put:
-      tags:
-        - User
-      summary: Update User
-      description: Update User
-      operationId: updateUser
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: ''
-            examples:
-              Update User:
-                value:
-                  name: ''
-      responses:
-        '200':
-          description: ''
-      security:
-        - bearerAuth: []
-    delete:
-      tags:
-        - User
-      summary: Delete User
-      description: Delete User
-      operationId: deleteUser
-      responses:
-        '200':
-          description: ''
-      security:
-        - bearerAuth: []
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          example: cm3iy3c7p0000pyzi6mlhxjev
-  /user/change-password/{id}:
-    post:
-      tags:
-        - User
-      summary: Change Password
-      description: Change Password
-      operationId: changePassword
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                newPassword:
-                  type: string
-                  example: '12345678'
-                oldPassword:
-                  type: string
-                  example: '123456789'
-            examples:
-              Change Password:
-                value:
-                  newPassword: '12345678'
-                  oldPassword: '123456789'
-      responses:
-        '200':
-          description: ''
-      security:
-        - bearerAuth: []
-    parameters:
-      - name: id
-        in: path
-        required: true
-        schema:
-          type: string
-          example: cm38vqpdn0000bl6r0e5qa88y
-  /user/forgot-password:
-    post:
-      tags:
-        - User
-      summary: Forgot Password
-      description: Forgot Password
-      operationId: forgotPassword
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: viniciusjungers@gmail.com
-            examples:
-              Forgot Password:
-                value:
-                  email: viniciusjungers@gmail.com
-      responses:
-        '200':
-          description: ''
-      security:
-        - {}
-  /user/reset-password/{token}:
-    post:
-      tags:
-        - User
-      summary: Reset Password
-      description: Reset Password
-      operationId: resetPassword
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                password:
-                  type: string
-                  example: '123456789'
-            examples:
-              Reset Password:
-                value:
-                  password: '123456789'
-      responses:
-        '200':
-          description: ''
-    parameters:
-      - name: token
-        in: path
-        required: true
-        schema:
-          type: string
-          example: dwz7you9oxl
-  /generator/password:
-    post:
-      tags:
-        - Generators
-      summary: Generate password
-      description: Generate password
-      operationId: generatePassword
-      parameters:
-        - name: length
-          in: query
-          schema:
-            type: string
-            example: '50'
-        - name: specialCharacters
-          in: query
-          schema:
-            type: string
-            example: 'true'
-        - name: numbers
-          in: query
-          schema:
-            type: string
-            example: 'true'
-        - name: lowercase
-          in: query
-          schema:
-            type: string
-            example: 'true'
-        - name: uppercase
-          in: query
-          schema:
-            type: string
-            example: 'true'
-        - name: quantity
-          in: query
-          schema:
-            type: string
-            example: '30'
-      responses:
-        '200':
-          description: ''
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-tags:
-  - name: User
-  - name: Generators
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Basic API",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3333",
+      "description": "Development server"
+    },
+    {
+      "url": "https://af23-191-249-53-197.ngrok-free.app",
+      "description": "Production server"
+    }
+  ],
+  "paths": {
+    "/user/login": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Create Session",
+        "description": "Create Session",
+        "operationId": "createSession",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "email": "example@email.com",
+                "password": "12345678"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/user/logout": {
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Destroy Session",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Destroy Session",
+        "operationId": "destroySession",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Index User",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Index User",
+        "operationId": "indexUser",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "1"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "updateUser22"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Create User",
+        "description": "Create User",
+        "operationId": "createUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "email": "example@email.com",
+                "name": "example",
+                "password": "12345678"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/user/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get User",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Get User",
+        "operationId": "getUser",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Update User",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Update User",
+        "operationId": "updateUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": ""
+                  }
+                }
+              },
+              "example": {
+                "name": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Delete User",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Delete User",
+        "operationId": "deleteUser",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "cm3iy3c7p0000pyzi6mlhxjev"
+          }
+        }
+      ]
+    },
+    "/user/change-password/{id}": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Change Password",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "description": "Change Password",
+        "operationId": "changePassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "newPassword": {
+                    "type": "string",
+                    "example": "12345678"
+                  },
+                  "oldPassword": {
+                    "type": "string",
+                    "example": "123456789"
+                  }
+                }
+              },
+              "example": {
+                "newPassword": "12345678",
+                "oldPassword": "123456789"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "cm38vqpdn0000bl6r0e5qa88y"
+          }
+        }
+      ]
+    },
+    "/user/forgot-password": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Forgot Password",
+        "description": "Forgot Password",
+        "operationId": "forgotPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              },
+              "example": {
+                "email": "example@email.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/user/reset-password/{token}": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Reset Password",
+        "description": "Reset Password",
+        "operationId": "resetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "password": {
+                    "type": "string",
+                    "example": "123456789"
+                  }
+                }
+              },
+              "example": {
+                "password": "123456789"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "token",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "dwz7you9oxl"
+          }
+        }
+      ]
+    }
+  },
+  "tags": [
+    {
+      "name": "User"
+    },
+    {
+      "name": "Generators"
+    }
+  ],
+
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
+
