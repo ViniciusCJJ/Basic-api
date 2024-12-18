@@ -4,7 +4,7 @@ import { inject, injectable } from 'tsyringe';
 import { plainToInstance } from 'class-transformer';
 import { RedisProvider } from '@shared/providers/RedisProvider/implementation/RedisProvider';
 import {
-  IIndexResponse,
+  IndexResponse,
   IUserRepository,
 } from '../repository/UserRepository.interface';
 import { User } from '../entities/User';
@@ -24,7 +24,7 @@ class IndexUserService {
     page: number,
     limit: number,
     filters: Partial<User>,
-  ): Promise<IIndexResponse> {
+  ): Promise<IndexResponse<User>> {
     const requestUser = await this.userRepository.findBy({
       id,
     });
