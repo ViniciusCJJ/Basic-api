@@ -1,7 +1,6 @@
 import { injectable, inject } from 'tsyringe';
 import { IUserRepository } from '@modules/User/repository/UserRepository.interface';
 import { AppError } from '@shared/error/AppError';
-import bcrypt from 'bcrypt';
 import { plainToInstance } from 'class-transformer';
 import { UserRole } from '@prisma/client';
 import { User } from '../entities/User';
