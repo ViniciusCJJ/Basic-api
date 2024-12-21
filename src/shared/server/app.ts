@@ -5,6 +5,7 @@ import path from 'path';
 import { router } from './routes';
 import '../providers/RedisProvider';
 import '../providers/MailProvider';
+import '../providers/StorageProvider';
 import '@shared/container';
 
 const app = express();
