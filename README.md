@@ -8,7 +8,6 @@
 - Execute o comando `yarn prisma migrate dev` para rodar as migrations
 - Execute o comando `yarn dev` para rodar o projeto
 
-
 ## Tecnologias utilizadas
 - Node.js
 - Typescript
@@ -29,4 +28,19 @@
 
 ## Testes
 - Para rodar os testes, execute o comando `yarn test`, o jest está configurado para identificar apenas arquivos ts(x), se necessário, altere o arquivo `jest.config.js`.
+
+## Observações
+- ## Upload de arquivos com o multer
+  - Para fazer upload de arquivos, é necessário criar uma pasta chamada `uploads` na raiz do projeto.
+  - O arquivo de upload deve ser enviado no campo `file` do form-data.
+  - Exemplo básico de utilização:
+
+    ```javascript
+    import { upload } from '@config/StorageConfig';
+
+    app.post('/file', upload.single('file'), (req, res) => {
+      res.json(req.file?.filename);
+    });
+    ```
+
 
