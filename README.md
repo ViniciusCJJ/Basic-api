@@ -36,7 +36,7 @@
   - Exemplo básico de utilização:
 
     ```javascript
-    import { upload } from '@config/StorageConfig';
+    import { upload } from '@config/MulterConfig';
 
     app.post('/file', upload.single('file'), (req, res) => {
       res.json(req.file?.filename);
