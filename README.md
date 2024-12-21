@@ -24,7 +24,7 @@
 - Prettier
 
 ## Documentação
-- A documentação da API foi feita com Swagger e pode ser acessada em `http://localhost:3333/api-docs` (work in progress)
+- A documentação da API foi feita com Swagger e pode ser acessada em `http://localhost:3333/api-docs`
 
 ## Testes
 - Para rodar os testes, execute o comando `yarn test`, o jest está configurado para identificar apenas arquivos ts(x), se necessário, altere o arquivo `jest.config.js`.
