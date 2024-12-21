@@ -1,6 +1,7 @@
 import express, { json } from 'express';
 import logger from '@shared/utils/logger';
 import { globalErrorHandler } from '@shared/middleware/globalErrorHandler';
+import path from 'path';
 import { router } from './routes';
 import '../providers/RedisProvider';
 import '../providers/MailProvider';
@@ -31,6 +32,11 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 app.use(router);
+
+app.use(
+  '/files',
+  express.static(path.resolve(__dirname, '..', '..', '..', 'uploads')),
+);
 
 app.all('*', (_req, res) => {
   res.status(404).json({ message: 'Rota não encontrada', statusCode: 404 });
