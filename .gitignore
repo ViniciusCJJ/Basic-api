@@ -6,3 +6,4 @@ yarn-error.log
 logs/
 uploads/*
 !uploads/.gitkeep
+src/shared/database/generated/prisma/
