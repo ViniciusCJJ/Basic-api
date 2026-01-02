@@ -20,7 +20,8 @@
       "@modules/*": ["src/modules/*"],
       "@shared/*": ["src/shared/*"],
       "@error/*": ["src/shared/errors/*"],
-      "@config/*": ["src/config/*"]
+      "@config/*": ["src/config/*"],
+      "@prisma/*": ["src/shared/database/generated/prisma/*"]
     }
   },
   "editor.formatOnSave": true,
