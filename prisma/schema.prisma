@@ -11,13 +11,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String    @id @default(cuid())
+  email     String    @unique
   name      String
   password  String
-  role      UserRole @default(User)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  blocked   Boolean   @default(false)
+  lastLogin DateTime?
+  role      UserRole  @default(User)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@map("users")
 }
