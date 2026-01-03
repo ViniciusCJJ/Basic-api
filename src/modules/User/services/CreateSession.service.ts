@@ -36,6 +36,10 @@ class CreateSessionService {
       throw new AppError('Verifique se o email e senha estão corretos', 404);
     }
 
+    if (user.blocked) {
+      throw new AppError('Seu usuário foi bloqueado por um administrador', 403);
+    }
+
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
@@ -45,6 +49,10 @@ class CreateSessionService {
     const token = jwt.sign({ id: user.id, role: user.role }, this.jwtSecret, {
       expiresIn: this.jwtExpiresIn,
     });
+
+    user.lastLogin = new Date();
+
+    await this.userRepository.update(user);
 
     return {
       user: plainToInstance(User, user),

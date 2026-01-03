@@ -10,6 +10,10 @@ class User implements IUser {
 
   role!: $Enums.UserRole;
 
+  blocked!: boolean;
+
+  lastLogin!: Date | null;
+
   @Exclude()
   password!: string;
 

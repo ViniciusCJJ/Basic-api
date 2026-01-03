@@ -8,6 +8,7 @@ interface IUserRepository {
   listBy(data: IndexRequest<User>): Promise<IndexResponse<User>>;
   update(user: User): Promise<User>;
   remove(user: User): Promise<void>;
+  listBlockedIds(): Promise<string[]>;
 }
 
 export { IUserRepository, IndexResponse, IndexRequest };

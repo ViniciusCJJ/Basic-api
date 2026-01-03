@@ -93,6 +93,19 @@ export const getUserSchema: IValidateSchemaType = {
   }),
 };
 
+export const blockUserSchema: IValidateSchemaType = {
+  params: z.object({
+    id: z.string().regex(/^c[a-z0-9]{24}$/, {
+      message: 'Id inválido',
+    }),
+  }),
+  body: z.object({
+    blocked: z.boolean({
+      required_error: 'Campo blocked é obrigatório',
+    }),
+  }),
+};
+
 export const indexUserSchema: IValidateSchemaType = {
   query: z.object({
     page: z
@@ -105,6 +118,14 @@ export const indexUserSchema: IValidateSchemaType = {
       .optional(),
     name: z.string().optional(),
     email: z.string().optional(),
+    blocked: z
+      .string()
+      .transform(value => {
+        if (value.toLowerCase() === 'true') return true;
+        if (value.toLowerCase() === 'false') return false;
+        return undefined;
+      })
+      .optional(),
   }),
 };
 

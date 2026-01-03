@@ -56,6 +56,15 @@ class UserRepository implements IUserRepository {
     });
   }
 
+  async listBlockedIds(): Promise<string[]> {
+    const blockedUsers = await prisma.user.findMany({
+      where: { blocked: true },
+      select: { id: true },
+    });
+
+    return blockedUsers.map(user => user.id);
+  }
+
   async listBy({
     page = 1,
     limit = Number(process.env.PAGINATION_LIMIT) ?? 10,

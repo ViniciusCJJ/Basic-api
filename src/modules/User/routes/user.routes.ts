@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { container } from 'tsyringe';
 import {
+  blockUserSchema,
   changePasswordSchema,
   createUserSchema,
   deleteUserSchema,
@@ -47,6 +48,13 @@ userRouter.delete(
 );
 
 userRouter.put('/:id', validate(updateUserSchema), userController.update);
+
+userRouter.put(
+  '/block/:id',
+  verifyAuth([UserRole.Admin]),
+  validate(blockUserSchema),
+  userController.block,
+);
 
 userRouter.get('/:id', validate(getUserSchema), userController.get);
 

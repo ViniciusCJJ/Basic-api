@@ -10,6 +10,7 @@ import { ChangePasswordService } from '../services/ChangePassword.service';
 import { ForgotPasswordService } from '../services/ForgotPassword.service';
 import { ResetPasswordService } from '../services/ResetPassword.service';
 import { DestroySessionService } from '../services/DestroySession.service';
+import { BlockUserService } from '../services/BlockUser.service';
 
 class UserController {
   async create(req: Request, res: Response): Promise<void> {
@@ -87,6 +88,23 @@ class UserController {
     const user = await indexUser.execute(id, page, limit, filters);
 
     res.status(200).json(user);
+  }
+
+  async block(req: Request, res: Response): Promise<void> {
+    const { id } = req.params;
+    const { blocked } = req.body;
+    const { id: request_id, role } = req.user!;
+
+    const blockUser = container.resolve(BlockUserService);
+
+    const user = await blockUser.execute({
+      id,
+      request_id,
+      role,
+      blocked,
+    });
+
+    res.status(201).json(user);
   }
 
   async changePassword(req: Request, res: Response): Promise<void> {

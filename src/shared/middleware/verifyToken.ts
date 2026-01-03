@@ -1,7 +1,7 @@
 import { AppError } from '@shared/error/AppError';
 import { RedisProvider } from '@shared/providers/RedisProvider/implementation/RedisProvider';
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { container } from 'tsyringe';
 
 export const verifyToken = async (
@@ -20,9 +20,12 @@ export const verifyToken = async (
   try {
     const token = req.headers.authorization.split(' ')[1];
 
-    const decoded = jwt.verify(token as string, secret);
+    const decoded = jwt.verify(token as string, secret) as JwtPayload & {
+      id?: string;
+      role?: string;
+    };
 
-    if (!decoded) {
+    if (!decoded || !decoded.id) {
       return res.status(401).json({ message: 'Token inválido', status: 401 });
     }
 
@@ -32,6 +35,15 @@ export const verifyToken = async (
 
     if (tokenExists) {
       throw new AppError('Token Inválido', 401);
+    }
+
+    const blockedList = await redisProvider.get('blocked_users');
+
+    if (blockedList) {
+      const blockedIds = JSON.parse(blockedList) as string[];
+      if (blockedIds.includes(decoded.id!)) {
+        return res.status(401).json({ message: 'Token inválido', status: 401 });
+      }
     }
 
     Object.assign(req, { user: decoded });

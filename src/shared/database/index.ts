@@ -1,10 +1,10 @@
-import "dotenv/config";
-import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '../database/generated/prisma/client'
+import 'dotenv/config';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaClient } from '../database/generated/prisma/client';
 
-const connectionString = `${process.env.DATABASE_URL}`
+const connectionString = `${process.env.DATABASE_URL}`;
 
-const adapter = new PrismaPg({ connectionString })
+const adapter = new PrismaPg({ connectionString });
 
 const prisma = new PrismaClient({
   log: [
@@ -14,8 +14,8 @@ const prisma = new PrismaClient({
     },
   ],
   adapter,
-})
+});
 
-console.log('Prisma client initialized.')
+console.log('Prisma client initialized.');
 
-export { prisma }
+export { prisma };
