@@ -12,7 +12,7 @@ export async function globalErrorHandler(
   _req: Request,
   res: Response,
   _next: NextFunction,
-): Promise<any> {
+): Promise<Response> {
   if ((error as IZodError)?.name === 'ZodError') {
     return res.status(400).json({
       message: `${(error as ZodError)?.errors[0]?.message}`,
