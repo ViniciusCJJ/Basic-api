@@ -1,5 +1,6 @@
 import { container } from 'tsyringe';
 import { Request, Response } from 'express';
+import { IAuthenticatedRequest } from '@shared/types/AuthenticatedRequest';
 import { CreateUserService } from '../services/CreateUser.service';
 import { CreateSessionService } from '../services/CreateSession.service';
 import { UpdateUserService } from '../services/UpdateUser.service';
@@ -23,7 +24,7 @@ class UserController {
     res.status(201).json(user);
   }
 
-  async update(req: Request, res: Response): Promise<void> {
+  async update(req: IAuthenticatedRequest, res: Response): Promise<void> {
     const { id } = req.params;
     const { name } = req.body;
     const { id: request_id, role } = req.user;
@@ -57,7 +58,7 @@ class UserController {
     res.status(200).json(response);
   }
 
-  async get(req: Request, res: Response): Promise<void> {
+  async get(req: IAuthenticatedRequest, res: Response): Promise<void> {
     const { id } = req.params;
     const { id: request_id } = req.user;
 
@@ -68,7 +69,7 @@ class UserController {
     res.status(200).json(user);
   }
 
-  async delete(req: Request, res: Response): Promise<void> {
+  async delete(req: IAuthenticatedRequest, res: Response): Promise<void> {
     const { id } = req.params;
     const { id: request_id } = req.user;
 
@@ -79,21 +80,26 @@ class UserController {
     res.status(204).send();
   }
 
-  async index(req: Request, res: Response): Promise<void> {
+  async index(req: IAuthenticatedRequest, res: Response): Promise<void> {
     const { page, limit, ...filters } = req.query;
     const { id } = req.user;
 
     const indexUser = container.resolve(IndexUserService);
 
-    const user = await indexUser.execute(id, page, limit, filters);
+    const user = await indexUser.execute(
+      id,
+      Number(page),
+      Number(limit),
+      filters,
+    );
 
     res.status(200).json(user);
   }
 
-  async block(req: Request, res: Response): Promise<void> {
+  async block(req: IAuthenticatedRequest, res: Response): Promise<void> {
     const { id } = req.params;
     const { blocked } = req.body;
-    const { id: request_id, role } = req.user!;
+    const { id: request_id, role } = req.user;
 
     const blockUser = container.resolve(BlockUserService);
 
@@ -107,8 +113,11 @@ class UserController {
     res.status(201).json(user);
   }
 
-  async changePassword(req: Request, res: Response): Promise<void> {
-    const { id } = req.params as { id: string };
+  async changePassword(
+    req: IAuthenticatedRequest,
+    res: Response,
+  ): Promise<void> {
+    const { id } = req.params;
     const { oldPassword, newPassword } = req.body;
     const { id: request_id } = req.user;
 

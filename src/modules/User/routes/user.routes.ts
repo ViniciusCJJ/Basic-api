@@ -17,6 +17,7 @@ import { validate } from '@shared/middleware/validate';
 import { verifyToken } from '@shared/middleware/verifyToken';
 import verifyAuth from '@shared/middleware/verifyAuth';
 import { UserRole } from '@prisma/client';
+import { authenticatedHandler } from '@shared/utils/authenticatedHandler';
 import { UserController } from '../controller/user.controller';
 
 const userRouter = Router();
@@ -47,30 +48,42 @@ userRouter.delete(
   userController.destroySession,
 );
 
-userRouter.put('/:id', validate(updateUserSchema), userController.update);
+userRouter.put(
+  '/:id',
+  validate(updateUserSchema),
+  authenticatedHandler(userController.update),
+);
 
 userRouter.put(
   '/block/:id',
   verifyAuth([UserRole.Admin]),
   validate(blockUserSchema),
-  userController.block,
+  authenticatedHandler(userController.block),
 );
 
-userRouter.get('/:id', validate(getUserSchema), userController.get);
+userRouter.get(
+  '/:id',
+  validate(getUserSchema),
+  authenticatedHandler(userController.get),
+);
 
-userRouter.delete('/:id', validate(deleteUserSchema), userController.delete);
+userRouter.delete(
+  '/:id',
+  validate(deleteUserSchema),
+  authenticatedHandler(userController.delete),
+);
 
 userRouter.get(
   '/',
   verifyAuth([UserRole.Admin]),
   validate(indexUserSchema),
-  userController.index,
+  authenticatedHandler(userController.index),
 );
 
 userRouter.post(
   '/change-password/:id',
   validate(changePasswordSchema),
-  userController.changePassword,
+  authenticatedHandler(userController.changePassword),
 );
 
 export { userRouter };
