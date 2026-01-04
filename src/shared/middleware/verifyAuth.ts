@@ -2,7 +2,9 @@ import { AppError } from '@shared/error/AppError';
 import { Request, Response, NextFunction } from 'express';
 import { JwtPayload, verify } from 'jsonwebtoken';
 
-export default function verifyAuth(roles: string[]): any {
+export default function verifyAuth(
+  roles: string[],
+): (req: Request, res: Response, next: NextFunction) => void {
   return (req: Request, _res: Response, next: NextFunction) => {
     const secret = process.env.JWT_SECRET
       ? (process.env.JWT_SECRET as string)
