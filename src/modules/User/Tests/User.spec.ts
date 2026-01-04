@@ -6,8 +6,9 @@ import '@shared/server/index';
 import { prisma } from '@shared/database';
 import { app } from '@shared/server/app';
 import request from 'supertest';
+import { blockedUsersJob } from '@shared/jobs';
 
-let server: any;
+let server: import('http').Server;
 
 beforeAll(() => {
   prisma.$connect();
@@ -142,7 +143,6 @@ describe('User module tests', () => {
   });
 
   it('Create session with token to destroy', async () => {
-    // eslint-disable-next-line no-promise-executor-return
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     const response = await request(app).post('/user/login').send({
@@ -245,7 +245,8 @@ describe('User module tests', () => {
   });
 });
 
-afterAll(() => {
-  prisma.$disconnect();
+afterAll(async () => {
+  await blockedUsersJob.stop();
+  await prisma.$disconnect();
   server.close();
 });
