@@ -1,6 +1,6 @@
 import cron from 'node-cron';
 import { container } from 'tsyringe';
-import { SyncBlockedUsersJob } from './SyncBlockedUsersJob';
+import { SyncBlockedUsersJob } from './syncBlockedUsersJob';
 
 const runSyncBlockedUsers = async (): Promise<void> => {
   const job = container.resolve(SyncBlockedUsersJob);
